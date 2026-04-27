@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1/auth")
@@ -29,11 +31,12 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request){
         String response = authService.login(request);
+
         if(response.equals("User doesn't exist")){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Incorrect Email ID");
-        }else if(response.equals("Logged in successfully")){
-            return ResponseEntity.ok("Logged in successfully");
+        }else if(response.equals("Incorrect credentials")){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect Password");
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect Password");
+        return ResponseEntity.ok(Map.of("token",response));
     }
 }

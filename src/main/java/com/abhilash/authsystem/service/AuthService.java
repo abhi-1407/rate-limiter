@@ -19,7 +19,10 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+
     private final PasswordEncoder passwordEncoder;
+
+    private final JwtService jwtService;
 
     public String register(RegisterRequest req) {
         String email = req.getEmail();
@@ -49,7 +52,7 @@ public class AuthService {
         user = userRepository.findUserByEmail(email);
 
         if(passwordEncoder.matches(pass,user.get().getPassword())){
-            return "Logged in successfully";
+            return jwtService.generateToken(user.get().getEmail());
         }
 
         return "Incorrect credentials";
