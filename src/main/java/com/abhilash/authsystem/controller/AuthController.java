@@ -31,7 +31,6 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request){
         String response = authService.login(request);
-
         if(response.equals("User doesn't exist")){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Incorrect Email ID");
         }else if(response.equals("Incorrect credentials")){
