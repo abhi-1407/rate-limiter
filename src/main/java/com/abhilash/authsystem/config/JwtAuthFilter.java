@@ -37,7 +37,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
-        System.out.println("Abhilash authHeader is " + authHeader);
         String path = request.getRequestURI();
 
         if (path.startsWith("/api/v1/auth")) {
@@ -46,22 +45,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println("Abhilash returning authHeader");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
         String token = authHeader.substring(7);
-        System.out.println("Abhilash token is " + token);
 
         try {
             String email = jwtService.extractEmail(token);
-            System.out.println("Abhilash email is " + email);
             User user =  userRepository.findUserByEmail(email).orElseThrow(() -> new RuntimeException("Role not found"));
             List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
                     .map(role -> new SimpleGrantedAuthority(role.getName()))
                     .toList();
-            System.out.println("Abhilash authorities are " + authorities);
             UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken(
                             email,

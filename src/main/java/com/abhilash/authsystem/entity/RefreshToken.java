@@ -2,8 +2,13 @@ package com.abhilash.authsystem.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.Instant;
+
 @Entity
-@Table(name = "refresh_tokens")
+@Table(name = "refresh_tokens", indexes = {
+        @Index(name = "idx_token", columnList = "token")
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,11 +20,13 @@ public class RefreshToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String token;
 
-    private Long expiryDate;
+    @Column(nullable = false)
+    private Instant expiryDate;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }
